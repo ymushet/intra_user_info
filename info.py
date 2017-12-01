@@ -12,16 +12,17 @@ SECRET = "c28b45d82f1efe060a89ee56909f0cedb0e9a95b7e0057ef6f6f3a1c5a60db20"
 AUTH_URL = "https://api.intra.42.fr/oauth/token"
 USER_INFO_URL = "https://api.intra.42.fr/v2/users/{}/?access_token={}" #"https://api.intra.42.fr/v2/users/{}"
 
+#forming two requests POST to authorise, GET to Parse info. Than return json() object to print id, name, etc.
 
 def main():
 
-    data = "grant_type=client_credentials&client_id={}&client_secret={}"
+    data = "grant_type=client_credentials&client_id={}&client_secret={}" #forms request data.
     auth = requests.post(AUTH_URL, data.format(UID, SECRET))
-    token = auth.json()['access_token']
+    token = auth.json()['access_token'] #auth returns binary with code and ather stuff. json['accses_token'] contain key.
     #print(token)
     #user_info = requests.get(url=USR_INFO_URL.format(USER_LOGIN), headers={'Authorization': token}) безопасный способ авторизации
     user_info = requests.get(url=USER_INFO_URL.format(USER_LOGIN, token))
-    if user_info.status_code:
+    if user_info.status_code: #check response status (should return .json() only if 500) but it's not (
         return user_info.json()
     else:
         print(user_info.status_code)
